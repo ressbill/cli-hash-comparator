@@ -4,7 +4,7 @@
   "description": "Hash evaluation and comparison",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Artur Grigorian",
   "license": "ISC",

@@ -5,7 +5,7 @@ const RESOURCE_TYPE = require('./constants.js').RESOURCE_TYPE;
 
 function terminateIfNotFoundLocal(filePath, errorCode) {
   if (!fs.existsSync(filePath)) {
-    console.log(`Файл не найден, проверьте путь: ${filePath}`);
+    console.log(`[ERROR] Файл не найден, проверьте путь: ${filePath}`);
     process.exit(errorCode);
   }
 }
@@ -93,7 +93,7 @@ class FilesHandler {
   }
 
   fetchResource() {
-    return this.resource === RESOURCE_TYPE.LOCAL ? this.localResource.bind(this)() : this.remoteResource.bind(this)();
+    return this.resource === RESOURCE_TYPE.LOCAL ? this.localResource() : this.remoteResource();
   }
 
   determineResource() {

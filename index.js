@@ -17,7 +17,7 @@ filesHandler
     const sha256FileHashString = filesHandler.sha256FileHashString.toString('hex');
 
     if (originalFileHashString !== sha256FileHashString) {
-      console.log('[ERROR] Unmatching hash error exit with code 102');
+      console.log('[ERROR] Хэши не совпадают');
       process.exit(errorCodes.unmatchingHashError);
     }
 
