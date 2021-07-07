@@ -1,55 +1,29 @@
 const crypto = require('crypto');
-const fs = require('fs');
-const util = require('util');
-const http = require('http');
-
 const errorCodes = require('./constants.js').errorCodes;
+const FilesHandler = require('./FilesHandler');
 
 const filePath = process.argv[2];
 
-const hash = crypto.createHash('sha256');
+const filesHandler = new FilesHandler(filePath);
+filesHandler.determineResource();
 
+filesHandler
+  .fetchResource()
+  .then(() => {
+    const originalFileHash = crypto.createHash('sha256');
 
-terminateIfNotFound(filePath, errorCodes.originalFileReadError)
+    const originalFileHashString = originalFileHash.update(filesHandler.originalFileBuffer).digest('hex');
 
+    const sha256FileHashString = filesHandler.sha256FileHashString.toString('hex');
 
-const buffer = fs.readFileSync(filePath);
-const sha256 = hash.update(buffer).digest('hex')
-fs.writeFileSync(`${filePath}.sha256`, sha256 )
-
-function terminateIfNotFound(filePath, errorCode) {
-    if(!fs.existsSync(filePath)) {
-        console.log("Файл не найден, проверьте путь", errorCode);
-        process.exit(errorCode);
-    }
-}
-
-class FileResourceGetter {
-    filePath;
-    hashedFilePath;
-    orininalFileBuffer;
-    hashedBuffer;
-    
-    constructor(filePath){
-        this.filePath = filePath;
-        this.hashedFilePath = filePath + '.sha256'
+    if (originalFileHashString !== sha256FileHashString) {
+      console.log('[ERROR] Unmatching hash error exit with code 102');
+      process.exit(errorCodes.unmatchingHashError);
     }
 
-    localResource(){
-        terminateIfNotFound(this.filePath)
-        const buffer = fs.readFileSync(this.filePath);
-    }
-
-    remoteResource(){
-        const file = fs.createWriteStream("file.jpg");
-        const request = http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response) {
-        response.pipe(file);
-        });
-    }
-
-    determineResource() {
-
-    }
-}
-
-
+    console.log('[SUCCESS] хэши файлов совпадают');
+  })
+  .catch((e) => {
+    console.log('[ERROR] ', e);
+    process.exit(1);
+  });

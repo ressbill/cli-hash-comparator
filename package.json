@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Artur Grigorian",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.3.2",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^27.0.6"
+  }
 }
